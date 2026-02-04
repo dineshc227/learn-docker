@@ -30,7 +30,7 @@ Before Docker, applications are deployed manually.
 Steps required:
 
 1. Install Node.js ( https://nodejs.org/en/download )
-2. Install npm
+2. Install npm (installed along with nodejs)
 3. Clone project code
 4. Install dependencies
 5. Build application
@@ -175,10 +175,11 @@ Dockerfile
 FROM node:18-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm config set registry https://registry.npmjs.org/ \
+    && npm install --legacy-peer-deps --no-audit --no-fund
 COPY . .
-CMD ["npm", "start"]
 EXPOSE 3000
+CMD ["npm", "start"]
 ```
 
 ---
