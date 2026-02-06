@@ -1,0 +1,37 @@
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  imageName: react-frontend
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+    # Build Docker image
+    - task: Docker@2
+      displayName: Build Docker Image
+      inputs:
+        command: build
+        dockerfile: '$(Build.SourcesDirectory)/day3/react-frontend/Dockerfile'
+        repository: $(imageName)
+        tags: |
+          $(tag)
+
+    # Show Docker Image ID
+    - script: |
+        echo "Listing Docker Images"
+        docker images
+        echo "Image ID for $(imageName):$(tag)"
+        docker images $(imageName):$(tag) --format "{{.ID}}"
+      displayName: Show Docker Image ID
